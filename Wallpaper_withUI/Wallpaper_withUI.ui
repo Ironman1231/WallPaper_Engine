@@ -1,0 +1,25 @@
+<UI version="4.0" >
+ <class>Wallpaper_withUIClass</class>
+ <widget class="QWidget" name="Wallpaper_withUIClass" >
+  <property name="objectName" >
+   <string notr="true">Wallpaper_withUIClass</string>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Wallpaper_withUI</string>
+  </property>$centralwidget$
+ </widget>
+ <layoutDefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <resources>
+   <include location="Wallpaper_withUI.qrc"/>
+ </resources>
+ <connections/>
+</UI>
