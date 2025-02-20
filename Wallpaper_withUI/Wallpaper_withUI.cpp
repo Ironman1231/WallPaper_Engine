@@ -1,6 +1,7 @@
 ﻿#include "Wallpaper_withUI.h"
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <iostream>
 
 Wallpaper_withUI::Wallpaper_withUI(QWidget *parent)
     : QWidget(parent)
@@ -179,7 +180,9 @@ BOOL EnumWindowsProc(HWND hwnd, LPARAM lparam)
 void Wallpaper_withUI::startDisplay()
 {
     //add some command to  videoPath and convert it from QString to wstring
-    QString tempVideoPath = " --fullscreen --loop \"" + newVideoPath + "\"";
+    //QString tempVideoPath = " --vf=crop=1728:1080 --fullscreen --loop \"" + newVideoPath + "\"";
+    QString tempVideoPath = " --no-keepaspect --fullscreen --loop \"" + newVideoPath + "\"";
+    //QString tempVideoPath = " --fullscreen --loop \"" + newVideoPath + "\"";
     std::wstring wVideoPath = tempVideoPath.toStdWString();
     LPCWSTR lpVideoPath = wVideoPath.c_str();
 
@@ -214,9 +217,25 @@ void Wallpaper_withUI::startDisplay()
         // Not necessarily both arguments need to be provided, but at least one must be explicit. Another one can be NULL or 0.
         //HWND hMpvWindow = FindWindow(L"mpv", L"DynamicWallpaper.mp4 - mpv");
         HWND hMpvWindow = FindWindow(L"mpv", windowName);
-        SetParent(hMpvWindow, hProgman);
 
-        EnumWindows(EnumWindowsProc, 0);
+        // whether window SHELLDLL_DefView is still in the Progman, cause after version 24H2, Progman will not split to three different windows after receiving 0x52c
+        HWND hDefView = FindWindowEx(hProgman, 0, L"SHELLDLL_DefView", 0);
+        if (hDefView != NULL)
+        {
+            HWND hWorkerW = FindWindowEx(hProgman, 0, L"WorkerW", 0);
+            if (hWorkerW != NULL)
+            {
+                SetParent(hMpvWindow, hWorkerW);
+                ShowWindow(hDefView, SW_HIDE);
+                Sleep(0);
+                ShowWindow(hDefView, SW_SHOWNORMAL);
+            }
+        }
+        else
+        {
+            SetParent(hMpvWindow, hProgman);
+            EnumWindows(EnumWindowsProc, 0);
+        }
 
         currentVideoPath = newVideoPath;
     }
@@ -259,18 +278,33 @@ void Wallpaper_withUI::stopDisplay()
     std::wstring wVideoName = videoName.toStdWString();
     LPCWSTR windowName = wVideoName.c_str();
 
-    //HWND hMpvWindow = FindWindow(L"mpv", L"DynamicWallpaper.mp4 - mpv");
-    HWND hMpvWindow = FindWindow(L"mpv", windowName);
-    if (hMpvWindow)
+    HWND hProgman = FindWindow(L"Progman", 0);
+    HWND hDefView = FindWindowEx(hProgman, 0, L"SHELLDLL_DefView", 0);
+    
+    if (hDefView != NULL)
     {
-        // Send a WM_CLOSE message to close the window
-        PostMessage(hMpvWindow, WM_CLOSE, 0, 0);
+        HWND hWorkerW = FindWindowEx(hProgman, 0, L"WorkerW", 0);
+        HWND hMpvWindoww = FindWindowEx(hWorkerW, 0, L"mpv", windowName);
+        if (hMpvWindoww != NULL)
+        {
+            PostMessage(hMpvWindoww, WM_CLOSE, 0, 0);
+            return;
+        }
     }
     else
     {
-        CallbackData data;
-        data.currentVideoPath = videoName;
-        EnumWindows(CloseWindows, reinterpret_cast<LPARAM>(&data));
+        HWND hMpvWindow = FindWindow(L"mpv", windowName);
+        if (hMpvWindow)
+        {
+            // Send a WM_CLOSE message to close the window
+            PostMessage(hMpvWindow, WM_CLOSE, 0, 0);
+        }
+        else
+        {
+            CallbackData data;
+            data.currentVideoPath = videoName;
+            EnumWindows(CloseWindows, reinterpret_cast<LPARAM>(&data));
+        }
     }
 }
 
