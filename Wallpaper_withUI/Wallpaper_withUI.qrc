@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/Wallpaper_withUI">
-        <file>Icon/ultraman_png_icon.png</file>
+        <file>Icon/ultraman_png_icon.ico</file>
     </qresource>
 </RCC>

@@ -62,7 +62,7 @@ Wallpaper_withUI::Wallpaper_withUI(QWidget *parent)
 
     //Create icon of tray
     trayIcon = new QSystemTrayIcon(this);
-    trayIcon->setIcon(QIcon(":/Wallpaper_withUI/Icon/ultraman_png_icon.png"));    // Set Tray Icon
+    trayIcon->setIcon(QIcon(":/Wallpaper_withUI/Icon/ultraman_png_icon.ico"));    // Set Tray Icon
     trayIcon->setToolTip("WallPaper Application");    // Set tray tips
 
     //Create menu of tray

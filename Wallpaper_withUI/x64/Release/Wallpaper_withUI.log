@@ -1,8 +1,10 @@
 ﻿   Qt/MSBuild: 3.3.1.1
    Qt: 5.14.2
+  rcc Wallpaper_withUI.qrc
   Wallpaper_withUI.cpp
+  qrc_Wallpaper_withUI.cpp
   Generating code
-  5 of 106 functions ( 4.7%) were compiled, the rest were copied from previous compilation.
+  8 of 106 functions ( 7.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
